@@ -2,6 +2,8 @@
 pragma solidity ^0.8.0;
 
 import "hardhat/console.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "./interface/IERC20.sol";
 
 interface CallProxy{
     function anyCall(
@@ -14,10 +16,51 @@ interface CallProxy{
     ) external;
 }
 
-contract NenoBridgeV01 {
-    address public anyCall;
-    uint256 public destChainID;
+contract NenoBridgeV01 is Ownable{
+    address public anyCallContract;
     uint256 public currChainID;
+    uint256 public destChainID;
     address public destContract;
 
+
+    // tracks bridge's depositor's balance of tokens deposited (agnostic)
+    mapping (address => uint256) public balanceOf;
+
+    constructor(address _anyCallContract, uint256 _currChainID, uint256 _destChainID){
+        anyCallContract = _anyCallContract;
+        currChainID = _currChainID;
+        destChainID = _destChainID;
+    }
+
+    function setDestContract(address _newDestContract) public onlyOwner returns (bool){
+        destContract = _newDestContract;
+        return true;
+    }
+
+    function deposit(address _token, uint256 _amount) public returns (bool) { //add prereq
+        IERC20(_token).transferFrom(msg.sender, address(this), _amount);
+        balanceOf[msg.sender] += _amount;
+
+        // INSERT CALL TO ANYCALL CONTRACT TO MINT ASSETS ON OTHER CHAIN
+        CallProxy(anyCallContract).anyCall(
+            // destContract
+            destContract,
+
+            // sending the encoded bytes of the string msg and decode on the destination chain
+            abi.encode(_amount),
+
+            // 0x as fallback address because we don't have a fallback function
+            address(0),
+
+            // destination chain ID
+            destChainID,
+
+            // Using 2 flag to pay fee on current chain
+            2
+            );
+
+        return true;
+    }
+
 }
+
