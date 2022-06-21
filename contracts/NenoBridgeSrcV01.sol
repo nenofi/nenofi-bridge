@@ -76,15 +76,5 @@ contract NenoBridgeSrcV01 is Ownable{
         return true;
     }
 
-    function anyExecute(bytes memory _data) external returns (bool){
-        (address _to, uint256 _amount) = abi.decode(_data, (address, uint256));  
-
-        // TODO: ADD MINT BRIDGED TOKENS
-        IneIDR(neToken).mint(_to, _amount);
-
-        return true;
-    }
-
-
 }
 
