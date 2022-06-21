@@ -16,15 +16,27 @@ interface CallProxy{
     ) external;
 }
 
+interface IneIDR{
+    function mint(address, uint256) external;
+    function burn(address, uint256) external;
+}
+
 contract NenoBridgeV01 is Ownable{
+
+    // AnyCall multichain protocol
     address public anyCallContract;
     uint256 public currChainID;
     uint256 public destChainID;
     address public destContract;
 
+    // to mint new tokens
+    address public neToken;
 
     // tracks bridge's depositor's balance of tokens deposited (agnostic)
     mapping (address => uint256) public balanceOf;
+
+    event LogDeposit(address indexed token, uint amount);
+    event NewMsg(uint256 msg);
 
     constructor(address _anyCallContract, uint256 _currChainID, uint256 _destChainID){
         anyCallContract = _anyCallContract;
@@ -37,6 +49,7 @@ contract NenoBridgeV01 is Ownable{
         return true;
     }
 
+
     function deposit(address _token, uint256 _amount) public returns (bool) { //add prereq
         IERC20(_token).transferFrom(msg.sender, address(this), _amount);
         balanceOf[msg.sender] += _amount;
@@ -47,7 +60,7 @@ contract NenoBridgeV01 is Ownable{
             destContract,
 
             // sending the encoded bytes of the string msg and decode on the destination chain
-            abi.encode(_amount),
+            abi.encode(msg.sender, _amount),
 
             // 0x as fallback address because we don't have a fallback function
             address(0),
@@ -59,8 +72,19 @@ contract NenoBridgeV01 is Ownable{
             2
             );
 
+        emit LogDeposit(_token,_amount);
         return true;
     }
+
+    function anyExecute(bytes memory _data) external returns (bool){
+        (address _to, uint256 _amount) = abi.decode(_data, (address, uint256));  
+
+        // TODO: ADD MINT BRIDGED TOKENS
+        IneIDR(neToken).mint(_to, _amount);
+
+        return true;
+    }
+
 
 }
 
