@@ -21,11 +21,11 @@ interface IneIDR{
     function burn(address, uint256) external;
 }
 
-contract NenoBridgeV01 is Ownable{
+contract NenoBridgeSrcV01 is Ownable{
 
     // AnyCall multichain protocol
     address public anyCallContract;
-    uint256 public currChainID;
+    uint256 public srcChainID;
     uint256 public destChainID;
     address public destContract;
 
@@ -38,9 +38,9 @@ contract NenoBridgeV01 is Ownable{
     event LogDeposit(address indexed token, uint amount);
     event NewMsg(uint256 msg);
 
-    constructor(address _anyCallContract, uint256 _currChainID, uint256 _destChainID){
+    constructor(address _anyCallContract, uint256 _srcChainID, uint256 _destChainID){
         anyCallContract = _anyCallContract;
-        currChainID = _currChainID;
+        srcChainID = _srcChainID;
         destChainID = _destChainID;
     }
 
