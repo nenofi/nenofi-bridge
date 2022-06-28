@@ -80,7 +80,7 @@ contract NenoBridgeSrcV01 is Ownable{
     function anyExecute(bytes memory _data) external returns (bool){
         (address _to, uint256 _amount) = abi.decode(_data, (address, uint256));  
 
-        // TODO: ADD REDEEM DEPOSITED TOKENS
+        // TODO: ADD REDEEM DEPOSITED TOKENS from bridge dest
         if(_to == address(0)){
             return false;
         }
