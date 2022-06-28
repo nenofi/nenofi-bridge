@@ -36,7 +36,7 @@ contract NenoBridgeSrcV01 is Ownable{
     mapping (address => uint256) public balanceOf;
 
     event LogDeposit(address indexed token, uint amount);
-    event NewMsg(uint256 msg);
+    // event NewMsg(uint256 msg);
 
     constructor(address _anyCallContract, uint256 _srcChainID, uint256 _destChainID){
         anyCallContract = _anyCallContract;
