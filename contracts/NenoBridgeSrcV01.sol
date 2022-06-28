@@ -49,7 +49,6 @@ contract NenoBridgeSrcV01 is Ownable{
         return true;
     }
 
-
     function deposit(address _token, uint256 _amount) public returns (bool) { //add prereq
         IERC20(_token).transferFrom(msg.sender, address(this), _amount);
         balanceOf[msg.sender] += _amount;
@@ -76,5 +75,17 @@ contract NenoBridgeSrcV01 is Ownable{
         return true;
     }
 
+
+
+    function anyExecute(bytes memory _data) external returns (bool){
+        (address _to, uint256 _amount) = abi.decode(_data, (address, uint256));  
+
+        // TODO: ADD REDEEM DEPOSITED TOKENS
+        if(_to == address(0)){
+            return false;
+        }
+
+        return true;
+    }
 }
 
