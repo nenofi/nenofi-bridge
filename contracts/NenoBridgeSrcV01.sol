@@ -33,7 +33,7 @@ contract NenoBridgeSrcV01 is Ownable{
     address public neToken;
 
     // tracks bridge's depositor's balance of tokens deposited (agnostic)
-    mapping (address => uint256) public balanceOf;
+    // mapping (address => uint256) public balanceOf;
 
     event LogDeposit(address indexed token, uint amount);
     // event NewMsg(uint256 msg);
@@ -51,7 +51,7 @@ contract NenoBridgeSrcV01 is Ownable{
 
     function deposit(address _token, uint256 _amount) public returns (bool) { //add prereq
         IERC20(_token).transferFrom(msg.sender, address(this), _amount);
-        balanceOf[msg.sender] += _amount;
+        // balanceOf[msg.sender] += _amount;
 
         // INSERT CALL TO ANYCALL CONTRACT TO MINT ASSETS ON OTHER CHAIN
         CallProxy(anyCallContract).anyCall(
@@ -59,7 +59,7 @@ contract NenoBridgeSrcV01 is Ownable{
             destContract,
 
             // sending the encoded bytes of the string msg and decode on the destination chain
-            abi.encode(msg.sender, _amount),
+            abi.encode(msg.sender, _amount), 
 
             // 0x as fallback address because we don't have a fallback function
             address(0),
@@ -81,7 +81,7 @@ contract NenoBridgeSrcV01 is Ownable{
         (address _to, uint256 _amount) = abi.decode(_data, (address, uint256));  
 
         // TODO: ADD REDEEM DEPOSITED TOKENS from bridge dest
-        if(_to == address(0)){
+        if(_to == address(0) && _amount>0){
             return false;
         }
 
