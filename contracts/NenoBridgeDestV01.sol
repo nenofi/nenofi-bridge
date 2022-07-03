@@ -15,7 +15,7 @@ interface CallProxy{
     ) external;
 }
 
-interface IneIDR{
+interface IneToken{
     function mint(address, uint256) external;
     function burn(address, uint256) external;
 }
@@ -49,7 +49,7 @@ contract NenoBridgeDestV01 is Ownable{
 
         // TODO: ADD MINT BRIDGED TOKENS to depositor from bridge src
         // Make sure when user deposit bidr they get nebidr or idrt they get neidrt
-        IneIDR(neToken).mint(_to, _amount);
+        IneToken(neToken).mint(_to, _amount);
 
         return true;
     }

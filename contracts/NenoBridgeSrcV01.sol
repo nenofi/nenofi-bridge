@@ -16,7 +16,7 @@ interface CallProxy{
     ) external;
 }
 
-interface IneIDR{
+interface IneToken{
     function mint(address, uint256) external;
     function burn(address, uint256) external;
 }
