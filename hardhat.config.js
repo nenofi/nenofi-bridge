@@ -32,7 +32,6 @@ module.exports = {
       initialBaseFeePerGas: 0,
       forking: {
         url: "https://rpc.ankr.com/fantom",
-        url: process.env.STAGING_ALCHEMY_KEY,
       },   
     },
     ftmtest: {

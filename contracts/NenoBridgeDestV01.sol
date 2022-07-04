@@ -32,6 +32,8 @@ contract NenoBridgeDestV01 is Ownable{
     address public neToken;
 
     event LogRedeem(address indexed token, uint amount);
+    event LogMint(address indexed token, uint amount);
+
 
     constructor(address _anyCallContract, uint256 _srcChainID, uint256 _destChainID){
         anyCallContract = _anyCallContract;
@@ -50,14 +52,16 @@ contract NenoBridgeDestV01 is Ownable{
         // TODO: ADD MINT BRIDGED TOKENS to depositor from bridge src
         // Make sure when user deposit bidr they get nebidr or idrt they get neidrt
         IneToken(neToken).mint(_to, _amount);
+        emit LogMint(_to,_amount);
 
         return true;
     }
 
+    // PLEASE RECHECK REDEEMING LOGIC ESPECIALLY THE BURNING OF THE neTOKENS
     function redeem(address _token, uint256 _amount) public returns (bool) { //add prereq
         IERC20(_token).transferFrom(msg.sender, address(this), _amount);
         // balanceOf[msg.sender] += _amount;
-
+        IneToken(_token).burn(address(this), _amount);
         // INSERT CALL TO ANYCALL CONTRACT TO MINT ASSETS ON OTHER CHAIN
         CallProxy(anyCallContract).anyCall(
             // destContract

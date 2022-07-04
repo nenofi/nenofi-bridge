@@ -14,7 +14,7 @@ contract neToken is ERC20{
 
     // set of minters, nenobridge or other bridges
     mapping(address => bool) public isMinter;
-    address[] public minters;
+    // address[] public minters;
 
     modifier onlyOwner{
         require(msg.sender == owner, "NeIDR: NOT OWNER");
@@ -35,12 +35,13 @@ contract neToken is ERC20{
         _mint(_to, _amount);
     }
 
+    // RECHECK THIS LOGIC WHEN USER TRY TO REDEEM THEIR neTOKENS TO ORIGINAL TOKENS
     function burn(address _vault, uint256 _amount) external onlyAuth{
         _burn(_vault, _amount);
     }
 
     function addMinter(address _auth) external onlyOwner{
-        minters.push(_auth);
+        // minters.push(_auth);
         isMinter[_auth] = true;
     }
 
