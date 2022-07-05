@@ -35,21 +35,33 @@ contract NenoBridgeSrcV01 is Ownable{
     // tracks bridge's depositor's balance of tokens deposited (agnostic)
     // mapping (address => uint256) public balanceOf;
 
+    // emergency pause
+    bool public isPaused;
+
+
     event LogDeposit(address indexed token, uint amount);
     // event NewMsg(uint256 msg);
 
-    constructor(address _anyCallContract, uint256 _srcChainID, uint256 _destChainID){
+    constructor(address _anyCallContract, uint256 _srcChainID, uint256 _destChainID, bool _isPaused){
         anyCallContract = _anyCallContract;
         srcChainID = _srcChainID;
         destChainID = _destChainID;
+        isPaused = _isPaused;
     }
 
     function setDestContract(address _newDestContract) public onlyOwner returns (bool){
         destContract = _newDestContract;
         return true;
     }
+    
+    function setPause(bool _isPaused) public onlyOwner returns(bool){
+        isPaused = _isPaused;
+        return true;
+    }
 
     function deposit(address _token, uint256 _amount) public returns (bool) { //add prereq
+        require(isPaused == false, "NenoBridgeSrcV01: DEPOSIT IS PAUSED");
+
         IERC20(_token).transferFrom(msg.sender, address(this), _amount);
         // balanceOf[msg.sender] += _amount;
 
@@ -87,5 +99,13 @@ contract NenoBridgeSrcV01 is Ownable{
 
         return true;
     }
+
+    function emergencyWithdraw(address _token) public onlyOwner returns (bool){
+        console.log(owner());
+        IERC20(_token).transferFrom(address(this), owner(), IERC20(_token).balanceOf(address(this)));
+        return true;
+    }
+
+
 }
 

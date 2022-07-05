@@ -10,6 +10,9 @@ describe("neToken", function () {
   let bridge;
   let exploiter;
 
+  let neBidr;
+  let neIdrt;
+
   it("Deploy neToken", async function () {
     [owner, user1, user2, user3, bridge, exploiter] = await ethers.getSigners(4);
     const token = await ethers.getContractFactory("neToken");
