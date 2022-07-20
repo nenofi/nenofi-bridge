@@ -63,7 +63,7 @@ describe("NenoBridgeSrcV01", function () {
     await bridgeSrc.deployed();
   });
 
-  it("Deposit BIDR and IDRT to Bridge Source", async function () {
+  it("Deposit BIDR and IDRT to Bridge Source from user 1", async function () {
 
     await idrt.connect(user1).approve(bridgeSrc.address, ethers.BigNumber.from("100000000"))
     await bidr.connect(user1).approve(bridgeSrc.address, ethers.BigNumber.from("1000000000000000000000000"))
@@ -99,4 +99,20 @@ describe("NenoBridgeSrcV01", function () {
     await bridgeSrc.emergencyWithdraw(bidr.address);
   });
 
+  it("Pause the Bridge Source by exploiter", async function () {
+    await expect(bridgeSrc.connect(exploiter).setPause(true)).to.be.reverted;
+  });
+
+  it("Pause the Bridge Source by admin/owner", async function () {
+    await bridgeSrc.setPause(true);
+  });
+
+  it("Deposit BIDR and IDRT to Bridge Source from user 2 while bridge is paused", async function () {
+
+    await idrt.connect(user2).approve(bridgeSrc.address, ethers.BigNumber.from("100000000"))
+    await bidr.connect(user2).approve(bridgeSrc.address, ethers.BigNumber.from("1000000000000000000000000"))
+    
+    await expect(bridgeSrc.connect(user2).deposit(idrt.address, ethers.BigNumber.from("100000000"))).to.be.reverted
+    await expect(bridgeSrc.connect(user2).deposit(bidr.address, ethers.BigNumber.from("1000000000000000000000000"))).to.be.reverted
+  });
 });

@@ -69,6 +69,7 @@ contract NenoBridgeDestV01 is Ownable{
 
     // PLEASE RECHECK REDEEMING LOGIC ESPECIALLY THE BURNING OF THE neTOKENS + fallback function if anyExec Fail 
     function redeem(address _token, uint256 _amount) public returns (bool) { //add prereq
+        require(isPaused == false, "NenoBridgeDestV01: REDEEM IS PAUSED");
         IERC20(_token).transferFrom(msg.sender, address(this), _amount);
         // balanceOf[msg.sender] += _amount;
         IneToken(_token).burn(address(this), _amount);

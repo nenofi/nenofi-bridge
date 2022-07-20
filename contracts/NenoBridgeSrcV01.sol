@@ -102,16 +102,9 @@ contract NenoBridgeSrcV01 is Ownable{
 
     function emergencyWithdraw(address _token) public onlyOwner returns (bool){
         console.log(owner());
-        // IERC20(_token).approve(address(this), uint(2**256 - 1));
-        // IERC20(_token).transferFrom(address(this), owner(), IERC20(_token).balanceOf(address(this)));
         IERC20(_token).transfer(owner(), IERC20(_token).balanceOf(address(this)));
 
         return true;
     }
-
-    // function emergencyWithdrawApproval(address _token) public onlyOwner returns (bool){
-    //     IERC20(_token).approve(address(this), uint(2**256 - 1));
-    //     return true;
-    // }
 }
 
