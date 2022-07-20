@@ -30,7 +30,7 @@ contract NenoBridgeSrcV01 is Ownable{
     address public destContract;
 
     // to mint new tokens
-    address public neToken;
+    address public token;
 
     // tracks bridge's depositor's balance of tokens deposited (agnostic)
     // mapping (address => uint256) public balanceOf;
@@ -42,11 +42,12 @@ contract NenoBridgeSrcV01 is Ownable{
     event LogDeposit(address indexed token, uint amount);
     // event NewMsg(uint256 msg);
 
-    constructor(address _anyCallContract, uint256 _srcChainID, uint256 _destChainID, bool _isPaused){
+    constructor(address _anyCallContract, uint256 _srcChainID, uint256 _destChainID, bool _isPaused, address _token){
         anyCallContract = _anyCallContract;
         srcChainID = _srcChainID;
         destChainID = _destChainID;
         isPaused = _isPaused;
+        token = _token;
     }
 
     function setDestContract(address _newDestContract) public onlyOwner returns (bool){
@@ -61,6 +62,7 @@ contract NenoBridgeSrcV01 is Ownable{
 
     function deposit(address _token, uint256 _amount) public returns (bool) { //add prereq
         require(isPaused == false, "NenoBridgeSrcV01: DEPOSIT IS PAUSED");
+        require(_token == token, "NenoBridgeDestV01: INVALID TOKEN TO BE DEPOSITED");
 
         IERC20(_token).transferFrom(msg.sender, address(this), _amount);
         // balanceOf[msg.sender] += _amount;

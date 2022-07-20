@@ -29,7 +29,7 @@ contract NenoBridgeDestV01 is Ownable{
     address public srcContract;
 
     // to mint new tokens
-    address public neToken;
+    address public nebToken;
 
     // emergency pause
     bool public isPaused;
@@ -61,7 +61,7 @@ contract NenoBridgeDestV01 is Ownable{
 
         // TODO: ADD MINT BRIDGED TOKENS to depositor from bridge src
         // Make sure when user deposit bidr they get nebidr or idrt they get neidrt
-        IneToken(neToken).mint(_to, _amount);
+        IneToken(nebToken).mint(_to, _amount);
         emit LogMint(_to,_amount);
 
         return true;
@@ -70,6 +70,8 @@ contract NenoBridgeDestV01 is Ownable{
     // PLEASE RECHECK REDEEMING LOGIC ESPECIALLY THE BURNING OF THE neTOKENS + fallback function if anyExec Fail 
     function redeem(address _token, uint256 _amount) public returns (bool) { //add prereq
         require(isPaused == false, "NenoBridgeDestV01: REDEEM IS PAUSED");
+        require(_token == nebToken, "NenoBridgeDestV01: INVALID TOKEN");
+        
         IERC20(_token).transferFrom(msg.sender, address(this), _amount);
         // balanceOf[msg.sender] += _amount;
         IneToken(_token).burn(address(this), _amount);
