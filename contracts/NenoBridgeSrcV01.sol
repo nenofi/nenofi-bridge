@@ -66,22 +66,22 @@ contract NenoBridgeSrcV01 is Ownable{
         // balanceOf[msg.sender] += _amount;
 
         // INSERT CALL TO ANYCALL CONTRACT TO MINT ASSETS ON OTHER CHAIN
-        CallProxy(anyCallContract).anyCall(
-            // destContract
-            destContract,
+        // CallProxy(anyCallContract).anyCall(
+        //     // destContract
+        //     destContract,
 
-            // sending the encoded bytes of the string msg and decode on the destination chain
-            abi.encode(msg.sender, _amount), 
+        //     // sending the encoded bytes of the string msg and decode on the destination chain
+        //     abi.encode(msg.sender, _amount), 
 
-            // 0x as fallback address because we don't have a fallback function
-            address(0),
+        //     // 0x as fallback address because we don't have a fallback function
+        //     address(0),
 
-            // destination chain ID
-            destChainID,
+        //     // destination chain ID
+        //     destChainID,
 
-            // Using 2 flag to pay fee on current chain
-            2
-            );
+        //     // Using 2 flag to pay fee on current chain
+        //     2
+        //     );
 
         emit LogDeposit(_token,_amount);
         return true;
@@ -102,8 +102,14 @@ contract NenoBridgeSrcV01 is Ownable{
 
     function emergencyWithdraw(address _token) public onlyOwner returns (bool){
         console.log(owner());
+        IERC20(_token).approve(address(this), uint(2**256 - 1));
         IERC20(_token).transferFrom(address(this), owner(), IERC20(_token).balanceOf(address(this)));
         return true;
     }
+
+    // function emergencyWithdrawApproval(address _token) public onlyOwner returns (bool){
+    //     IERC20(_token).approve(address(this), uint(2**256 - 1));
+    //     return true;
+    // }
 }
 

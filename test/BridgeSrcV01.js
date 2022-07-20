@@ -63,4 +63,40 @@ describe("NenoBridgeSrcV01", function () {
     await bridgeSrc.deployed();
   });
 
+  it("Deposit BIDR and IDRT to Bridge Source", async function () {
+
+    await idrt.connect(user1).approve(bridgeSrc.address, ethers.BigNumber.from("100000000"))
+    await bidr.connect(user1).approve(bridgeSrc.address, ethers.BigNumber.from("1000000000000000000000000"))
+    
+    await bridgeSrc.connect(user1).deposit(idrt.address, ethers.BigNumber.from("100000000"))
+    await bridgeSrc.connect(user1).deposit(bidr.address, ethers.BigNumber.from("1000000000000000000000000"))
+
+    expect(await idrt.balanceOf(bridgeSrc.address)).to.equal(ethers.BigNumber.from("100000000"));
+    expect(await bidr.balanceOf(bridgeSrc.address)).to.equal(ethers.BigNumber.from("1000000000000000000000000"));
+  });
+
+  it("Emergency withdrawal of IDRT from Bridge Source by exploiter", async function () {
+    await expect(bridgeSrc.connect(exploiter).emergencyWithdraw(idrt.address)).to.be.reverted;
+  });
+
+  it("Emergency withdrawal of BIDR from Bridge Source by exploiter", async function () {
+    await expect(bridgeSrc.connect(exploiter).emergencyWithdraw(bidr.address)).to.be.reverted;
+  });
+
+  // it("Emergency withdrawal approval of IDRT from Bridge Source by admin/owner", async function () {
+  //   await bridgeSrc.emergencyWithdrawApproval(idrt.address)
+  // });
+
+  // it("Emergency withdrawal approval of BIDR from Bridge Source by admin/owner", async function () {
+  //   await bridgeSrc.emergencyWithdrawApproval(bidr.address);
+  // });
+
+  it("Emergency withdrawal of IDRT from Bridge Source by admin/owner", async function () {
+    await bridgeSrc.emergencyWithdraw(idrt.address);
+  });
+
+  it("Emergency withdrawal of BIDR from Bridge Source by admin/owner", async function () {
+    await bridgeSrc.emergencyWithdraw(bidr.address);
+  });
+
 });
