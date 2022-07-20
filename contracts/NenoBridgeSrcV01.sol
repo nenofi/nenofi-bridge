@@ -105,7 +105,5 @@ contract NenoBridgeSrcV01 is Ownable{
         IERC20(_token).transferFrom(address(this), owner(), IERC20(_token).balanceOf(address(this)));
         return true;
     }
-
-
 }
 

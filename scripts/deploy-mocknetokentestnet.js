@@ -5,10 +5,10 @@ async function main() {
 const [deployer] = await ethers.getSigners();
 console.log("deploying contract with account: " + deployer.address)
 const token = await ethers.getContractFactory("neToken");
-neBidr = await token.deploy('neBIDR', 'neBIDR', 18);
-neIdrt = await token.deploy('neIDRT', 'neIDRT', 2);
-console.log("neBidr address: " + neBidr.address + " decimals: " + await neBidr.decimals());
-console.log("neIdrt address: " + neIdrt.address+ " decimals: " + await neIdrt.decimals())
+neBidr = await token.deploy('nebBIDR', 'nebBIDR', 18);
+neIdrt = await token.deploy('nebIDRT', 'nebIDRT', 2);
+console.log("nebBIDR address: " + nebBidr.address + " decimals: " + await neBidr.decimals());
+console.log("nebIDRT address: " + nebIdrt.address+ " decimals: " + await neIdrt.decimals())
 
 }
 

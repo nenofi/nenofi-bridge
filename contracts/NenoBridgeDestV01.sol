@@ -26,23 +26,33 @@ contract NenoBridgeDestV01 is Ownable{
     address public anyCallContract;
     uint256 public srcChainID;
     uint256 public destChainID;
-    address public destContract;
+    address public srcContract;
 
     // to mint new tokens
     address public neToken;
+
+    // emergency pause
+    bool public isPaused;
 
     event LogRedeem(address indexed token, uint amount);
     event LogMint(address indexed token, uint amount);
 
 
-    constructor(address _anyCallContract, uint256 _srcChainID, uint256 _destChainID){
+    constructor(address _anyCallContract, uint256 _srcChainID, uint256 _destChainID, bool _isPaused){
         anyCallContract = _anyCallContract;
         srcChainID = _srcChainID;
         destChainID = _destChainID;
+        isPaused = _isPaused;
+
     }
 
-    function setDestContract(address _newDestContract) public onlyOwner returns (bool){
-        destContract = _newDestContract;
+    function setDestContract(address _newSrcContract) public onlyOwner returns (bool){
+        srcContract = _newSrcContract;
+        return true;
+    }
+
+    function setPause(bool _isPaused) public onlyOwner returns(bool){
+        isPaused = _isPaused;
         return true;
     }
 
@@ -57,15 +67,15 @@ contract NenoBridgeDestV01 is Ownable{
         return true;
     }
 
-    // PLEASE RECHECK REDEEMING LOGIC ESPECIALLY THE BURNING OF THE neTOKENS
+    // PLEASE RECHECK REDEEMING LOGIC ESPECIALLY THE BURNING OF THE neTOKENS + fallback function if anyExec Fail 
     function redeem(address _token, uint256 _amount) public returns (bool) { //add prereq
         IERC20(_token).transferFrom(msg.sender, address(this), _amount);
         // balanceOf[msg.sender] += _amount;
         IneToken(_token).burn(address(this), _amount);
         // INSERT CALL TO ANYCALL CONTRACT TO MINT ASSETS ON OTHER CHAIN
         CallProxy(anyCallContract).anyCall(
-            // destContract
-            destContract,
+            // srcContract
+            srcContract,
 
             // sending the encoded bytes of the string msg and decode on the destination chain
             abi.encode(msg.sender, _amount), 
@@ -73,8 +83,8 @@ contract NenoBridgeDestV01 is Ownable{
             // 0x as fallback address because we don't have a fallback function
             address(0),
 
-            // destination chain ID
-            destChainID,
+            // source chain ID
+            srcChainID,
 
             // Using 2 flag to pay fee on current chain
             2
