@@ -75,7 +75,7 @@ describe("NenoBridgeSrcV01", function () {
     await expect(bridgeSrcBIDR.connect(user1).deposit(idrt.address, ethers.BigNumber.from("100000000"))).to.be.reverted
   });
   
-  it("Deposit IDRT to Bridge Source IDRT from user 1", async function () {
+  it("Deposit IDRT to IDRT Bridge Source from user 1", async function () {
     await idrt.connect(user1).approve(bridgeSrcIDRT.address, ethers.BigNumber.from("100000000"))
     await bridgeSrcIDRT.connect(user1).deposit(idrt.address, ethers.BigNumber.from("100000000"))
 
@@ -95,11 +95,11 @@ describe("NenoBridgeSrcV01", function () {
     expect(await bidr.balanceOf(bridgeSrcBIDR.address)).to.equal(ethers.BigNumber.from("1000000000000000000000000"));
   });
 
-  it("Emergency withdrawal of IDRT from Bridge Source by exploiter", async function () {
+  it("Emergency withdrawal of IDRT from IDRT Bridge Source by exploiter", async function () {
     await expect(bridgeSrcIDRT.connect(exploiter).emergencyWithdraw(idrt.address)).to.be.reverted;
   });
 
-  it("Emergency withdrawal of BIDR from Bridge Source by exploiter", async function () {
+  it("Emergency withdrawal of BIDR from BIDR Bridge Source by exploiter", async function () {
     await expect(bridgeSrcBIDR.connect(exploiter).emergencyWithdraw(bidr.address)).to.be.reverted;
   });
 
@@ -111,38 +111,38 @@ describe("NenoBridgeSrcV01", function () {
   //   await bridgeSrc.emergencyWithdrawApproval(bidr.address);
   // });
 
-  it("Emergency withdrawal of IDRT from Bridge Source by admin/owner", async function () {
+  it("Emergency withdrawal of IDRT from IDRT Bridge Source by admin/owner", async function () {
     await bridgeSrcIDRT.emergencyWithdraw(idrt.address);
   });
 
-  it("Emergency withdrawal of BIDR from Bridge Source by admin/owner", async function () {
+  it("Emergency withdrawal of BIDR from BIDR Bridge Source by admin/owner", async function () {
     await bridgeSrcBIDR.emergencyWithdraw(bidr.address);
   });
 
-  it("Pause the Bridge Source IDRT by exploiter", async function () {
+  it("Pause the IDRT Bridge Source by exploiter", async function () {
     await expect(bridgeSrcIDRT.connect(exploiter).setPause(true)).to.be.reverted;
   });
 
-  it("Pause the Bridge Source BIDR by exploiter", async function () {
+  it("Pause the BIDR Bridge Source by exploiter", async function () {
     await expect(bridgeSrcBIDR.connect(exploiter).setPause(true)).to.be.reverted;
   });
 
-  it("Pause the Bridge Source IDRT by admin/owner", async function () {
+  it("Pause the IDRT Bridge Source by admin/owner", async function () {
     await bridgeSrcIDRT.setPause(true);
   });
 
-  it("Pause the Bridge Source BIDR by admin/owner", async function () {
+  it("Pause the BIDR Bridge Source by admin/owner", async function () {
     await bridgeSrcBIDR.setPause(true);
   });
 
-  it("Deposit IDRT to Bridge Source IDRT from user 2 while bridge is paused", async function () {
+  it("Deposit IDRT to IDRT Bridge Source from user 2 while bridge is paused", async function () {
 
     await idrt.connect(user2).approve(bridgeSrcIDRT.address, ethers.BigNumber.from("100000000"))
     
     await expect(bridgeSrcIDRT.connect(user2).deposit(idrt.address, ethers.BigNumber.from("100000000"))).to.be.reverted
   });
 
-  it("Deposit BIDR to Bridge Source BIDR from user 2 while bridge is paused", async function () {
+  it("Deposit BIDR to BIDR Bridge Source from user 2 while bridge is paused", async function () {
 
     await bidr.connect(user2).approve(bridgeSrcBIDR.address, ethers.BigNumber.from("1000000000000000000000000"))
     

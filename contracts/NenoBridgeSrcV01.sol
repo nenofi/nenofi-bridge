@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 import "hardhat/console.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "./interface/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 interface CallProxy{
     function anyCall(
@@ -90,7 +90,6 @@ contract NenoBridgeSrcV01 is Ownable{
     }
 
 
-
     function anyExecute(bytes memory _data) external returns (bool){
         (address _to, uint256 _amount) = abi.decode(_data, (address, uint256));  
 
@@ -103,7 +102,6 @@ contract NenoBridgeSrcV01 is Ownable{
     }
 
     function emergencyWithdraw(address _token) public onlyOwner returns (bool){
-        console.log(owner());
         IERC20(_token).transfer(owner(), IERC20(_token).balanceOf(address(this)));
 
         return true;
