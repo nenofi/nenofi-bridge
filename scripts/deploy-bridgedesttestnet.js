@@ -7,7 +7,7 @@ console.log("deploying contract with account: " + deployer.address)
 const BridgeDest = await ethers.getContractFactory("NenoBridgeSrcV01");
 
 //ftmtestnet (4002) to rinkeby (4) 
-bridgeDest = await BridgeDest.deploy('0xD7c295E399CA928A3a14b01D760E794f1AdF8990', 4002, 4);
+bridgeDest = await BridgeDest.deploy('0xD7c295E399CA928A3a14b01D760E794f1AdF8990', 4002, 4, false);
 console.log("bridge dest address: " + bridgeDest.address);
 console.log("bridge from: " + await bridgeDest.srcChainID() + " to " + await bridgeDest.destChainID())
 

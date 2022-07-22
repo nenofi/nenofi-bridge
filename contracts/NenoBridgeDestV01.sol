@@ -38,15 +38,16 @@ contract NenoBridgeDestV01 is Ownable{
     event LogMint(address indexed token, uint amount);
 
 
-    constructor(address _anyCallContract, uint256 _srcChainID, uint256 _destChainID, bool _isPaused){
+    constructor(address _anyCallContract, uint256 _srcChainID, uint256 _destChainID, bool _isPaused, address _nebToken){
         anyCallContract = _anyCallContract;
         srcChainID = _srcChainID;
         destChainID = _destChainID;
         isPaused = _isPaused;
+        nebToken = _nebToken;
 
     }
 
-    function setDestContract(address _newSrcContract) public onlyOwner returns (bool){
+    function setSrcContract(address _newSrcContract) public onlyOwner returns (bool){
         srcContract = _newSrcContract;
         return true;
     }
@@ -76,24 +77,30 @@ contract NenoBridgeDestV01 is Ownable{
         // balanceOf[msg.sender] += _amount;
         IneToken(_token).burn(address(this), _amount);
         // INSERT CALL TO ANYCALL CONTRACT TO MINT ASSETS ON OTHER CHAIN
-        CallProxy(anyCallContract).anyCall(
-            // srcContract
-            srcContract,
+        // CallProxy(anyCallContract).anyCall(
+        //     // srcContract
+        //     srcContract,
 
-            // sending the encoded bytes of the string msg and decode on the destination chain
-            abi.encode(msg.sender, _amount), 
+        //     // sending the encoded bytes of the string msg and decode on the destination chain
+        //     abi.encode(msg.sender, _amount), 
 
-            // 0x as fallback address because we don't have a fallback function
-            address(0),
+        //     // 0x as fallback address because we don't have a fallback function
+        //     address(0),
 
-            // source chain ID
-            srcChainID,
+        //     // source chain ID
+        //     srcChainID,
 
-            // Using 2 flag to pay fee on current chain
-            2
-            );
+        //     // Using 2 flag to pay fee on current chain
+        //     2
+        //     );
 
-        emit LogRedeem(_token,_amount);
+        // emit LogRedeem(_token,_amount);
+        return true;
+    }
+
+    function emergencyWithdraw(address _token) public onlyOwner returns (bool){
+        IERC20(_token).transfer(owner(), IERC20(_token).balanceOf(address(this)));
+
         return true;
     }
 }

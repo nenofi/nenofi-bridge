@@ -65,7 +65,6 @@ contract NenoBridgeSrcV01 is Ownable{
         require(_token == token, "NenoBridgeDestV01: INVALID TOKEN TO BE DEPOSITED");
 
         IERC20(_token).transferFrom(msg.sender, address(this), _amount);
-        // balanceOf[msg.sender] += _amount;
 
         // INSERT CALL TO ANYCALL CONTRACT TO MINT ASSETS ON OTHER CHAIN
         // CallProxy(anyCallContract).anyCall(
